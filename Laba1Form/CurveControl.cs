@@ -30,16 +30,26 @@ namespace Laba1Form
 
             points = new List<PointF>
         {
-            new PointF(0, 370),    // Нижний левый угол
-            //new PointF(92, 278),   // Промежуточная точка
-            new PointF(185, 185),  // Средняя точка
-            //new PointF(278, 92),   // Промежуточная точка
-            new PointF(370, 0)     // Верхний правый угол
+                new PointF(0, 370),
+                new PointF(185, 185),
+                new PointF(370, 0)
         };
         }
 
         public List<PointF> GetControlPoints()
         {
+            return points;
+        }
+
+        public List<PointF> ResetPoint()
+        {
+            points = new List<PointF>()
+            {
+                new PointF(0, 370),    
+                new PointF(185, 185), 
+                new PointF(370, 0)     
+            };
+            Invalidate();
             return points;
         }
 

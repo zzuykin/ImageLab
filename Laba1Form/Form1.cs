@@ -27,12 +27,28 @@ namespace Laba1Form
 
             curveControl = new CurveControl
             {
-                Size = new Size(370, 370),
+                Size = new Size(371, 371),
                 Location = new Point(1200, 40)
             };
 
             curveControl.CurveUpdated += new Action<List<PointF>>(ApplyCurveToImage);
             this.Controls.Add(curveControl);
+
+            Button bResetCurve = new Button
+            {
+                Location = new Point(1580, 50),
+                Text = "Reset",
+                AutoSize = true,
+                UseVisualStyleBackColor = true
+            };
+
+            bResetCurve.Click += (s, ev) => ResetCurve();
+            this.Controls.Add(bResetCurve);
+        }
+
+        private void ResetCurve()
+        {
+            ApplyCurveToImage(curveControl.ResetPoint());
         }
 
         private void ApplyCurveToImage(List<PointF> controlPoints)

@@ -92,7 +92,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
-            ClientSize = new Size(1639, 736);
+            ClientSize = new Size(1689, 736);
             Controls.Add(resultLabel);
             Controls.Add(bSave);
             Controls.Add(bOpen);
