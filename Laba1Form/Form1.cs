@@ -18,6 +18,7 @@ namespace Laba1Form
 
 
         private CurveControl curveControl;
+        private HistogramControl histogramControl;
 
         public Form1()
         {
@@ -37,13 +38,22 @@ namespace Laba1Form
             Button bResetCurve = new Button
             {
                 Location = new Point(1580, 50),
-                Text = "Reset",
+                Text = "Сбросить",
                 AutoSize = true,
                 UseVisualStyleBackColor = true
             };
 
             bResetCurve.Click += (s, ev) => ResetCurve();
             this.Controls.Add(bResetCurve);
+
+            histogramControl = new HistogramControl
+            {
+                Size = new Size(371, 150),
+                Location = new Point(1200, 430),
+                
+            };
+
+            this.Controls.Add(histogramControl);
         }
 
         private void ResetCurve()
@@ -63,8 +73,6 @@ namespace Laba1Form
                 float newY = InterpolateCurve(x, controlPoints);
                 lut[i] = (byte)(255 - (newY / curveControl.Height * 255));
             }
-
-            // Получаем текущее изображение (учитывает все слои)
             Bitmap sourceImage = new Bitmap(main_image);
             Bitmap newImage = new Bitmap(sourceImage.Width, sourceImage.Height, PixelFormat.Format32bppArgb);
 
@@ -80,19 +88,20 @@ namespace Laba1Form
             Marshal.Copy(sourceData.Scan0, sourceBuffer, 0, bytes);
             sourceImage.UnlockBits(sourceData);
 
-            // Применяем LUT только к финальному изображению
-            for (int i = 0; i < bytes; i += 4) // 4 байта на пиксель (BGRA)
+            for (int i = 0; i < bytes; i += 4) 
             {
-                newBuffer[i] = lut[sourceBuffer[i]];       // B
-                newBuffer[i + 1] = lut[sourceBuffer[i + 1]]; // G
-                newBuffer[i + 2] = lut[sourceBuffer[i + 2]]; // R
-                newBuffer[i + 3] = sourceBuffer[i + 3];     // A (не меняем)
+                newBuffer[i] = lut[sourceBuffer[i]];       
+                newBuffer[i + 1] = lut[sourceBuffer[i + 1]]; 
+                newBuffer[i + 2] = lut[sourceBuffer[i + 2]]; 
+                newBuffer[i + 3] = sourceBuffer[i + 3];    
             }
 
             Marshal.Copy(newBuffer, 0, newData.Scan0, bytes);
             newImage.UnlockBits(newData);
 
-            mainPBox.Image = newImage; // Обновляем отображение
+            mainPBox.Image = newImage;
+
+            histogramControl.UpdateHistogram(newImage);
         }
 
 
@@ -120,7 +129,6 @@ namespace Laba1Form
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     Bitmap image = new Bitmap(openFileDialog.FileName);
-                    //image = ResizeImageProportionally(image, mainPBox.Width, mainPBox.Height);
                     AddLayer(image);
                 }
                 resultLabel.Visible = false;
@@ -302,6 +310,7 @@ namespace Laba1Form
             main_image = result;
 
             ApplyCurveToImage(curveControl.GetControlPoints());
+            histogramControl.UpdateHistogram(main_image);
         }
 
 
